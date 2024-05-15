@@ -47,20 +47,54 @@ app.post('/api/AddNewPatient/', (req, res) =>{
       if(resul.length > 1){
         return res.status(200).json({ Message: 'found' });
       }else{
-        const sqlInsert="INSERT INTO Address (street, number, neighborhood, city, token, CEP) VALUES (?,?,?,?,?)";
+        const sqlInsert="INSERT INTO Address (street, number, neighborhood, city, token, CEP) VALUES (?,?,?,?,?,?)";
         db.query(sqlInsert, [newStreet, newNumber, newBairro, newCity, token, newCEP], (erro, result) =>{
-          if(err){
-            console.error("Erro ao cadastrar endereço", err);
+          if(erro){
+            console.error("Erro ao cadastrar endereço", erro);
             return res.status(500).json({ Error: 'Erro cadastrar endereço.' });
           }else{
               if(result){
                 const sqlAddress_id='SELECT id FROM Address WHERE token = ?';
                 db.query(sqlAddress_id, [token], (error, resulta) =>{
-                  if(err){
+                  if(error){
                     console.error("Erro ao buscar id do endereço.", err);
                     return res.status(500).json({ Error: 'Erro ao buscar id do endereço.' });
                   }else{
-                    
+                    if(resulta.length > 0){
+                        const addressId = resulta[0].id;
+                        const sqlInsertPatient="INSERT INTO patient (address_id, name, date_birth, registration_date, laudo, token) VALUES (?,?,?,?,?,?)";
+                        db.query(sqlInsertPatient, [addressId, newName, newDateBirth, newDateCreation, hasLaudo, token], (errorPatient, resultad) =>{
+                          if(errorPatient){
+                            console.error("Erro ao cadastrar paciente.", errorPatient);
+                            return res.status(500).json({ Error: 'Erro ao cadastrar paciente.' });
+                          }else{
+                            if(resultad){
+                              const sqlPatientId="SELECT id FROM patient WHERE token = ?";
+                              db.query(sqlPatientId, [token], (errorPatientId, resultado) =>{
+                                if(errorPatientId){
+                                  console.error("Erro ao buscar id do paciente.", errorPatientId);
+                                  return res.status(500).json({ Error: 'Erro ao buscar id do paciente.' });
+                                }else{
+                                  if(resultado.length > 0){
+                                    const patientId = resultado[0].id;
+                                    const sqlInsertCID="INSERT INTO CID (patient_id, code_cid) VALUES (?,?)";
+                                    db.query(sqlInsertCID, [patientId, newCID], (errorCID, resultCID) =>{
+                                      if(errorCID){
+                                        console.error("Erro ao cadastrar a CID do paciente.", errorCID);
+                                        return res.status(500).json({ Error: 'Erro ao cadastrar a CID do paciente.' });
+                                      }else{
+                                        if(resultCID){
+                                        return res.status(200).json({ Success: 'Success' });
+                                        }
+                                      }
+                                    })
+                                  }
+                                }
+                              })
+                            }
+                          }
+                        })
+                    }
                   }
                 })
               }
