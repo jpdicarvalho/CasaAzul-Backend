@@ -36,8 +36,39 @@ app.post('/api/AddNewPatient/', (req, res) =>{
     const newDateCreation = req.body.newDateCreation;
     const hasLaudo = req.body.hasLaudo;
     const newCID = req.body.newCID;
+    const token = req.body.token;
 
-  console.log(newName, newDateBirth)
+  const sql='SELECT token FROM Address WHERE token = ?';
+  db.query(sql, [token], (err, resul) =>{
+    if(err){
+      console.error("Erro ao verificar token de cadastro", err);
+      return res.status(500).json({ Error: 'Erro ao verificar token de cadastro.' });
+    }else{
+      if(resul.length > 1){
+        return res.status(200).json({ Message: 'found' });
+      }else{
+        const sqlInsert="INSERT INTO Address (street, number, neighborhood, city, token, CEP) VALUES (?,?,?,?,?)";
+        db.query(sqlInsert, [newStreet, newNumber, newBairro, newCity, token, newCEP], (erro, result) =>{
+          if(err){
+            console.error("Erro ao cadastrar endereço", err);
+            return res.status(500).json({ Error: 'Erro cadastrar endereço.' });
+          }else{
+              if(result){
+                const sqlAddress_id='SELECT id FROM Address WHERE token = ?';
+                db.query(sqlAddress_id, [token], (error, resulta) =>{
+                  if(err){
+                    console.error("Erro ao buscar id do endereço.", err);
+                    return res.status(500).json({ Error: 'Erro ao buscar id do endereço.' });
+                  }else{
+                    
+                  }
+                })
+              }
+          }
+        } )
+      }
+    }
+  })
 })
 
 
