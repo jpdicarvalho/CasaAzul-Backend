@@ -105,6 +105,23 @@ app.post('/api/AddNewPatient/', (req, res) =>{
   })
 })
 
+app.get('/api/patients/', (req, res) =>{
+  const sql=`SELECT *
+              FROM patient AS paciente
+              JOIN CID ON CID.patient_id = paciente.id
+              JOIN Address ON Address.id = paciente.address_id;`;
+  db.query(sql, (err, result) =>{
+    if(err){
+      console.error("Erro ao buscar pacientes.", err);
+      return res.status(500).json({ Error: 'Erro ao buscar pacientes.' });
+    }else{
+      if(result.length > 0){
+        res.status(200).json({Success: 'Success', result})
+      }
+    }
+  })
+})
+
 
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
