@@ -116,13 +116,147 @@ app.get('/api/patients/', (req, res) =>{
       return res.status(500).json({ Error: 'Erro ao buscar pacientes.' });
     }else{
       if(result.length > 0){
-        res.status(200).json({Success: 'Success', result})
+        return res.status(200).json({Success: 'Success', result})
       }
     }
   })
 })
 
+app.post('/api/AddNewColaborador/', (req, res) =>{
 
+    const newName = req.body.newName;
+    const newProfession = req.body.newProfession;
+    const newCPF = req.body.newCPF;
+    const newDateCreation = req.body.newDateCreation;
+    const isWorking = req.body.isWorking;
+    const newObservation = req.body.newObservation;
+
+    const sql='SELECT CPF FROM Professional WHERE CPF = ?';
+    db.query(sql, [newCPF], (err, resu) =>{
+      if(err){
+        console.error("Erro ao verificar existencia colaborador.", err);
+        return res.status(500).json({ Error: 'Erro ao verificar existencia colaborador.' });
+      }else{
+        if(resu.length > 0){
+          console.log(resu)
+          return res.status(200).json({Message: 'Found'})
+        }else{
+          const sqlInsert='INSERT INTO Professional (name, profession, creation_date, situation, observation, CPF) VALUES (?,?,?,?,?,?)';
+          db.query(sqlInsert, [newName, newProfession, newDateCreation, isWorking, newObservation, newCPF], (erro, resul) =>{
+            if(erro){
+              console.error("Erro ao cadastrar colaborador.", erro);
+              return res.status(500).json({ Error: 'Erro ao cadastrar colaborador.'});
+            }else{
+              if(resul){
+                return res.status(200).json({Message: 'Success'})
+              }
+            }
+          })
+        }
+      }
+    })
+})
+
+app.get('/api/colaboradores/', (re, res) =>{
+  const sql='Select * from Professional';
+  db.query(sql, (err, resul) =>{
+    if(err){
+      console.error("Erro ao buscar colaboradores.", err);
+      return res.status(500).json({ Error: 'Erro ao buscar colaboradores.' });
+    }else{
+      if(resul.length > 0){
+        return res.status(200).json({Success: 'Success', resul})
+      }
+    }
+  })
+})
+
+app.get('/api/get-colaboradores/:SearchColaborador', (req, res) =>{
+  const SearchColaborador = req.params.SearchColaborador;
+
+  const sql='SELECT id, name, profession FROM Professional WHERE name = ?';
+  db.query(sql, [SearchColaborador], (err, resul) =>{
+    if(err){
+      console.error("Erro ao buscar colaboradores.", err);
+      return res.status(500).json({ Error: 'Erro ao buscar colaboradores.' });
+    }else{
+      if(resul.length > 0){
+        return res.status(200).json({Success: 'Success', resul})
+      }else{
+        return res.status(200).json({Success: 'falied'})
+      }
+    }
+  })
+})
+
+app.get('/api/get-paciente/:SearchPaciente', (req, res) =>{
+  const SearchPaciente = req.params.SearchPaciente;
+
+  const sql='SELECT id, name, date_birth FROM patient WHERE name = ?';
+  db.query(sql, [SearchPaciente], (err, resul) =>{
+    if(err){
+      console.error("Erro ao buscar paciente.", err);
+      return res.status(500).json({ Error: 'Erro ao buscar paciente.' });
+    }else{
+      if(resul.length > 0){
+        return res.status(200).json({Success: 'Success', resul})
+      }else{
+        return res.status(200).json({Success: 'falied'})
+      }
+    }
+  })
+})
+
+app.get('/api/get-services/', (req, res) =>{
+  const sql='SELECT * FROM nameServices';
+  db.query(sql, (err, resu) =>{
+    if(err){
+      console.error("Erro ao buscar tipos de atendimentos.", err);
+      return res.status(500).json({ Error: 'Erro ao buscar tipos de atendimentos.' });
+    }else{
+      if(resu.length > 0){
+        return res.status(200).json({Success: 'Success', resu})
+      }else{
+        return res.status(200).json({Success: 'falied'})
+      }
+    }
+  })
+})
+
+app.post('/api/addNewService/:newService', (req, res) =>{
+  const newService = req.params.newService;
+
+  const sql='INSERT INTO nameServices (name) VALUES (?)';
+  db.query(sql, [newService], (err, resu) =>{
+    if(err){
+      console.error("Erro ao cadastrar tipo de atendimento.", err);
+      return res.status(500).json({ Error: 'Erro ao cadastrar tipo de atendimento.' });
+    }else{
+      if(resu){
+        return res.status(200).json({Success: 'Success'})
+      }
+    }
+  })
+})
+
+app.post('/api/addNewAtendimento/', (req, res) =>{
+  const newDateService = req.body.newDateService;
+  const serviceId = req.body.serviceId;
+  const colaboradoreId = req.body.colaboradoreId;
+  const pacienteId = req.body.pacienteId;
+
+  const sql='INSERT INTO Services (patient_id, professional_id, nameService_id, dateService_id) VALUES (?,?,?,?)';
+  db.query(sql, [pacienteId, colaboradoreId, serviceId, newDateService], (err, resu) =>{
+    if(err){
+      console.error("Erro ao cadastrar atendimento.", err);
+      return res.status(500).json({ Error: 'Erro ao cadastrar atendimento.' });
+    }else{
+      if(resu){
+        return res.status(200).json({Success: 'Success'})
+      }
+    }
+  })
+})
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
   });
