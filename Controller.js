@@ -239,14 +239,46 @@ app.post('/api/addNewService/:newService', (req, res) =>{
   })
 })
 
+app.get('/api/atendimentos/', (req, res) =>{
+
+  const status = 'Não realizado';
+
+  const sql=`SELECT
+              service.id AS service_id,
+              service.date_service, 
+              service.status, 
+              paciente.name AS paciente_name, 
+              profissional.name AS profissional_name, 
+              nameService.name AS service_name
+            FROM Services AS service
+            JOIN patient AS paciente ON paciente.id = service.patient_id
+            JOIN Professional AS profissional ON profissional.id = service.professional_id
+            JOIN nameServices AS nameService ON nameService.id = service.nameService_id
+            WHERE status = ?`;
+
+  db.query(sql, [status], (err, resu) =>{
+    if(err){
+      console.error("Erro ao buscar atendimentos.", err);
+      return res.status(500).json({ Error: 'Erro ao buscar atendimentos.' });
+    }else{
+      if(resu.length > 0){
+        return res.status(200).json({Success: 'Success', resu})
+      }else{
+        return res.status(200).json({Success: 'falied'})
+      }
+    }
+  })
+})
+
 app.post('/api/addNewAtendimento/', (req, res) =>{
   const newDateService = req.body.newDateService;
   const serviceId = req.body.serviceId;
   const colaboradoreId = req.body.colaboradoreId;
   const pacienteId = req.body.pacienteId;
+  const status = 'Não realizado'
 
-  const sql='INSERT INTO Services (patient_id, professional_id, nameService_id, dateService_id) VALUES (?,?,?,?)';
-  db.query(sql, [pacienteId, colaboradoreId, serviceId, newDateService], (err, resu) =>{
+  const sql='INSERT INTO Services (patient_id, professional_id, nameService_id, date_service, status) VALUES (?,?,?,?,?)';
+  db.query(sql, [pacienteId, colaboradoreId, serviceId, newDateService, status], (err, resu) =>{
     if(err){
       console.error("Erro ao cadastrar atendimento.", err);
       return res.status(500).json({ Error: 'Erro ao cadastrar atendimento.' });
