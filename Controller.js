@@ -289,6 +289,23 @@ app.post('/api/addNewAtendimento/', (req, res) =>{
     }
   })
 })
+
+app.post('/api/closeService/:atendimento_id', (req, res) =>{
+  const atendimentoId = req.params.atendimento_id;
+  const status = 'Realizado'
+
+  const sql='UPDATE Services SET  status = ? WHERE id = ?';
+  db.query(sql, [status, atendimentoId], (err, resul) =>{
+    if(err){
+      console.error("Erro ao atualizar status do atendimento.", err);
+      return res.status(500).json({ Error: 'Erro ao atualizar status do atendimento.' });
+    }else{
+      if(resul){
+        return res.status(200).json({Success: 'Success'})
+      }
+    }
+  })
+})
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
   });
