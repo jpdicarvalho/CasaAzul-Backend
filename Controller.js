@@ -189,6 +189,24 @@ app.get('/api/get-colaboradores/:SearchColaborador', (req, res) =>{
   })
 })
 
+app.get('/api/get-pacientes/:SearchPaciente', (req, res) =>{
+  const SearchPaciente = req.params.SearchPaciente;
+
+  const sql='SELECT id, name FROM patient WHERE name = ?';
+  db.query(sql, [SearchPaciente], (err, resul) =>{
+    if(err){
+      console.error("Erro ao buscar paciente.", err);
+      return res.status(500).json({ Error: 'Erro ao buscar paciente.' });
+    }else{
+      if(resul.length > 0){
+        return res.status(200).json({Success: 'Success', resul})
+      }else{
+        return res.status(200).json({Success: 'falied'})
+      }
+    }
+  })
+})
+
 app.get('/api/get-paciente/:SearchPaciente', (req, res) =>{
   const SearchPaciente = req.params.SearchPaciente;
 
@@ -306,6 +324,47 @@ app.post('/api/closeService/:atendimento_id', (req, res) =>{
     }
   })
 })
+
+app.get('/api/generateReport/:pacienteId/:serviceId/:dateInitial/:dateFinal', (req, res) => {
+  const pacienteId = req.params.pacienteId;
+  const serviceId = req.params.serviceId;
+  const dateInitial = req.params.dateInitial;
+  const dateFinal = req.params.dateFinal;
+
+  const status = 'Realizado';
+  console.log(pacienteId, serviceId, dateInitial, dateFinal);
+
+  const sql = `SELECT
+                  paciente.name AS patient_name,
+                  profissional.name AS professional_name,
+                  nameService.name AS name_service,
+                  service.date_service AS data_servico
+                FROM Services AS service
+                JOIN patient AS paciente ON paciente.id = service.patient_id
+                JOIN Professional AS profissional ON profissional.id = service.professional_id
+                JOIN nameServices AS nameService ON nameService.id = service.nameService_id
+                WHERE service.patient_id = ? 
+                  AND service.nameService_id = ?
+                  AND service.date_service BETWEEN ? AND ?
+                  AND service.status = ?
+              `;
+
+  db.query(sql, [pacienteId, serviceId, dateInitial, dateFinal, status], (err, result) =>{
+    if(err){
+      console.error("Erro ao gerar relatório.", err);
+      return res.status(500).json({ Error: 'Erro ao gerar relatório.' });
+    }else{
+      if(result.length > 0){
+        console.log(result)
+        return res.status(200).json({Success: 'Success', result})
+      }else{
+        console.log(result)
+        return res.status(200).json({Success: 'falied'})
+      }
+    }
+  })
+})
+
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
   });
