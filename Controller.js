@@ -358,7 +358,7 @@ app.get('/api/generateReportByPatient/:pacienteId', (req, res) => {
   })
 })
 
-//Route to generate report by patient
+//Route to generate report by service
 app.get('/api/generateReportByService/:serviceId', (req, res) => {
   const serviceId = req.params.serviceId;
   const status = 'Realizado';
@@ -378,6 +378,40 @@ app.get('/api/generateReportByService/:serviceId', (req, res) => {
               `;
 
   db.query(sql, [serviceId, status], (err, result) =>{
+    if(err){
+      console.error("Erro ao gerar relatório.", err);
+      return res.status(500).json({ Error: 'Erro ao gerar relatório.' });
+    }else{
+      if(result.length > 0){
+        return res.status(200).json({Success: 'Success', result})
+      }else{
+        return res.status(200).json({Success: 'falied'})
+      }
+    }
+  })
+})
+//Route to generate report by period
+app.get('/api/generateReportByPeriod/:dateInitial/:dateFinal', (req, res) => {
+  const dateInitial = req.params.dateInitial;
+  const dateFinal = req.params.dateFinal;
+
+  const status = 'Realizado';
+
+  const sql = `SELECT
+                  service.id AS service_id,
+                  paciente.name AS patient_name,
+                  profissional.name AS professional_name,
+                  nameService.name AS name_service,
+                  service.date_service AS data_servico
+                FROM Services AS service
+                JOIN patient AS paciente ON paciente.id = service.patient_id
+                JOIN Professional AS profissional ON profissional.id = service.professional_id
+                JOIN nameServices AS nameService ON nameService.id = service.nameService_id
+                WHERE service.date_service BETWEEN ? AND ?
+                  AND service.status = ?
+              `;
+
+  db.query(sql, [dateInitial, dateFinal, status], (err, result) =>{
     if(err){
       console.error("Erro ao gerar relatório.", err);
       return res.status(500).json({ Error: 'Erro ao gerar relatório.' });
