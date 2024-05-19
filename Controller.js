@@ -24,6 +24,22 @@ db.connect((error) => {
   }
 });
 
+app.get('/api/login/:userName/:password', (req, res) =>{
+  const userName = req.params.userName;
+  const password = req.params.password;
+
+  const sql='SELECT * FROM user WHERE user = ? AND password = ?';
+  db.query(sql, [userName, password], (err, result) =>{
+    if(err){
+      console.error("Erro ao realizar login", err);
+      return res.status(500).json({ Error: 'Erro ao realizar login.' });
+    }else{
+      if(result.length > 0){
+        return res.status(200).json({ Success: 'Success' });
+      }
+    }
+  })
+})
 app.post('/api/AddNewPatient/', (req, res) =>{
  
     const newName = req.body.newName;
