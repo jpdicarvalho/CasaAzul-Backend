@@ -28,7 +28,7 @@ app.get('/api/login/:userName/:password', (req, res) =>{
   const userName = req.params.userName;
   const password = req.params.password;
 
-  const sql='SELECT * FROM user WHERE user = ? AND password = ?';
+  const sql='SELECT * FROM Users WHERE user = ? AND password = ?';
   db.query(sql, [userName, password], (err, result) =>{
     if(err){
       console.error("Erro ao realizar login", err);
@@ -40,6 +40,7 @@ app.get('/api/login/:userName/:password', (req, res) =>{
     }
   })
 })
+
 app.post('/api/AddNewPatient/', (req, res) =>{
  
     const newName = req.body.newName;
