@@ -12,7 +12,7 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 
-// Create the connection to the database mysql on PlanetScale
+// Create the connection to the database mysql on Raiway
 const db = mysql.createConnection(process.env.DATABASE_URL)
 
 // Verify connection to the database
