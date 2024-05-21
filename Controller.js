@@ -137,105 +137,85 @@ app.post('/api/updatePatient/', (req, res) => {
   const pacienteId = req.body.pacienteId;
   const AddressId = req.body.AddressId;
 
-  // Construa a query base para atualização dos dados
-  let query = `UPDATE patient SET`;
+//===== Montando a query do patient =====
+  let queryPatient = `UPDATE patient SET`;
 
   // Array para armazenar os valores a serem atualizados
   const values = [];
 
-  // Verifique se os campos estão preenchidos e adicione à query
   if (newName) {
-    query += ` name = ?,`;
+    queryPatient += ` name = ?,`;
     values.push(newName);
   }
   if (newDateBirth) {
-    query += ` date_birth = ?,`;
+    queryPatient += ` date_birth = ?,`;
     values.push(newDateBirth);
   }
   if (newDateCreation) {
-    query += ` registration_date = ?,`;
+    queryPatient += ` registration_date = ?,`;
     values.push(newDateCreation);
   }
   if (hasLaudo) {
-    query += ` laudo = ?,`;
+    queryPatient += ` laudo = ?,`;
     values.push(hasLaudo);
   }
 
   // Remova a última vírgula da query
-  query = query.slice(0, -1);
+  queryPatient = queryPatient.slice(0, -1);
 
   // Adicione as condições WHERE na query
-  query += ` WHERE id = ?`;
+  queryPatient += ` WHERE id = ?`;
   values.push(pacienteId);
 
-  console.log(query)
-  console.log(values)
-
-const sql='SELECT token FROM Address WHERE token = ?';
-/*db.query(sql, [token], (err, resul) =>{
-  if(err){
-    console.error("Erro ao verificar token de cadastro", err);
-    return res.status(500).json({ Error: 'Erro ao verificar token de cadastro.' });
-  }else{
-    if(resul.length > 1){
-      return res.status(200).json({ Message: 'found' });
-    }else{
-      const sqlInsert="INSERT INTO Address (street, number, neighborhood, city, token, CEP) VALUES (?,?,?,?,?,?)";
-      db.query(sqlInsert, [newStreet, newNumber, newBairro, newCity, token, newCEP], (erro, result) =>{
-        if(erro){
-          console.error("Erro ao cadastrar endereço", erro);
-          return res.status(500).json({ Error: 'Erro cadastrar endereço.' });
-        }else{
-            if(result){
-              const sqlAddress_id='SELECT id FROM Address WHERE token = ?';
-              db.query(sqlAddress_id, [token], (error, resulta) =>{
-                if(error){
-                  console.error("Erro ao buscar id do endereço.", err);
-                  return res.status(500).json({ Error: 'Erro ao buscar id do endereço.' });
-                }else{
-                  if(resulta.length > 0){
-                      const addressId = resulta[0].id;
-                      const sqlInsertPatient="INSERT INTO patient (address_id, name, date_birth, registration_date, laudo, token) VALUES (?,?,?,?,?,?)";
-                      db.query(sqlInsertPatient, [addressId, newName, newDateBirth, newDateCreation, hasLaudo, token], (errorPatient, resultad) =>{
-                        if(errorPatient){
-                          console.error("Erro ao cadastrar paciente.", errorPatient);
-                          return res.status(500).json({ Error: 'Erro ao cadastrar paciente.' });
-                        }else{
-                          if(resultad){
-                            const sqlPatientId="SELECT id FROM patient WHERE token = ?";
-                            db.query(sqlPatientId, [token], (errorPatientId, resultado) =>{
-                              if(errorPatientId){
-                                console.error("Erro ao buscar id do paciente.", errorPatientId);
-                                return res.status(500).json({ Error: 'Erro ao buscar id do paciente.' });
-                              }else{
-                                if(resultado.length > 0){
-                                  const patientId = resultado[0].id;
-                                  const sqlInsertCID="INSERT INTO CID (patient_id, code_cid) VALUES (?,?)";
-                                  db.query(sqlInsertCID, [patientId, newCID], (errorCID, resultCID) =>{
-                                    if(errorCID){
-                                      console.error("Erro ao cadastrar a CID do paciente.", errorCID);
-                                      return res.status(500).json({ Error: 'Erro ao cadastrar a CID do paciente.' });
-                                    }else{
-                                      if(resultCID){
-                                      return res.status(200).json({ Success: 'Success' });
-                                      }
-                                    }
-                                  })
-                                }
-                              }
-                            })
-                          }
-                        }
-                      })
-                  }
-                }
-              })
-            }
-        }
-      } )
+  // Execute a query para atualizar os dados do serviço
+  db.query(queryPatient, values, (err, result) => {
+    if (err) {
+      console.error("Erro ao atualizar informações do paciente:", err);
+      res.status(500).json({ Success: "Error", Message: "Erro ao atualizar informações do paciente." });
+    } if(result) {
+      res.status(200).json({ Success: "Success"});
     }
+  })
+
+  //===== Montando a query do Address =====
+  let queryAddress = `UPDATE Address SET`;
+
+  // Array para armazenar os valores a serem atualizados
+  const valuesAddress = [];
+
+  if (newName) {
+    queryAddress += ` name = ?,`;
+    valuesAddress.push(newName);
   }
-})*/
+  if (newDateBirth) {
+    queryAddress += ` date_birth = ?,`;
+    valuesAddress.push(newDateBirth);
+  }
+  if (newDateCreation) {
+    queryAddress += ` registration_date = ?,`;
+    valuesAddress.push(newDateCreation);
+  }
+  if (hasLaudo) {
+    queryAddress += ` laudo = ?,`;
+    valuesAddress.push(hasLaudo);
+  }
+
+  // Remova a última vírgula da query
+  queryAddress = queryAddress.slice(0, -1);
+
+  // Adicione as condições WHERE na query
+  queryAddress += ` WHERE id = ?`;
+  valuesAddress.push(pacienteId);
+
+  // Execute a query para atualizar os dados do serviço
+  db.query(queryAddress, valuesAddress, (err, result) => {
+    if (err) {
+      console.error("Erro ao atualizar informações do paciente:", err);
+      res.status(500).json({ Success: "Error", Message: "Erro ao atualizar informações do paciente." });
+    } if(result) {
+      res.status(200).json({ Success: "Success"});
+    }
+  })
 })
 
 app.get('/api/patients/', (req, res) =>{
