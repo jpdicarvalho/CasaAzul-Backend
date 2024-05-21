@@ -41,7 +41,7 @@ app.get('/api/login/:userName/:password', (req, res) =>{
   })
 })
 
-app.post('/api/AddNewPatient/', (req, res) =>{
+app.post('/api/AddNewPatient/', (req, res) => {
  
     const newName = req.body.newName;
     const newDateBirth = req.body.newDateBirth;
