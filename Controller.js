@@ -10,15 +10,21 @@ const PORT = process.env.PORT || 3000;
 
 const allowedOrigins = ['https://jpdicarvalho.github.io', 'http://localhost:5173'];
 
+// Define as opções para a configuração do middleware CORS
 const corsOptions = {
+  // A propriedade 'origin' pode ser uma função que determina se uma origem é permitida
   origin: function (origin, callback) {
+    // Verifica se não há uma origem ou se a origem está na lista de origens permitidas
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      // Se a origem for permitida, chama o callback com null (para o erro) e true (para permitir a origem)
       callback(null, true);
     } else {
+      // Se a origem não for permitida, chama o callback com um erro indicando que a origem não é permitida
       callback(new Error('Not allowed by CORS'));
     }
   }
 };
+
 
 app.use(cors(corsOptions));
 
