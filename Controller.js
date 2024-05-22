@@ -9,7 +9,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors({
-  origin: 'https://jpdicarvalho.github.io/CasaAzul-Frontend/'
+  origin: 'https://jpdicarvalho.github.io'
 }));
 
 app.use(express.json());
