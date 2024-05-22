@@ -245,6 +245,13 @@ app.post('/api/updateAddress/', (req, res) => {
   })
 
 })
+//Route update laudo and cid
+app.post('/api/updateLaudoANDcid/', (req, res) => {
+ 
+  const hasLaudo = req.body.hasLaudo;
+  const newCID = req.body.newCID;
+  console.log(hasLaudo, newCID)
+})
 
 app.get('/api/patients/', (req, res) =>{
   const sql=`SELECT *
