@@ -174,6 +174,61 @@ app.post('/api/updatePatient/', (req, res) => {
   })
 
 })
+//Route update address
+app.post('/api/updateAddress/', (req, res) => {
+ 
+  const newCEP = req.body.newCEP;
+  const newStreet = req.body.newStreet;
+  const newNumber = req.body.newNumber;
+  const newBairro = req.body.newBairro;
+  const newCity = req.body.newCity;
+
+  const addressId = req.body.addressId;
+
+  let queryAddress = `UPDATE Address SET`;
+
+  // Array para armazenar os valores a serem atualizados
+  const values = [];
+
+  if (newStreet) {
+    queryAddress += ` street = ?,`;
+    values.push(newStreet);
+  }
+  if (newNumber) {
+    queryAddress += ` number = ?,`;
+    values.push(newNumber);
+  }
+  if (newBairro) {
+    queryAddress += ` neighborhood = ?,`;
+    values.push(newBairro);
+  }
+  if (newCity) {
+    queryAddress += ` city = ?,`;
+    values.push(newCity);
+  }
+  if (newCEP) {
+    queryAddress += ` CEP = ?,`;
+    values.push(newCEP);
+  }
+
+  // Remova a última vírgula da query
+  queryAddress = queryAddress.slice(0, -1);
+
+  // Adicione as condições WHERE na query
+  queryAddress += ` WHERE id = ?`;
+  values.push(addressId);
+
+  // Execute a query para atualizar os dados do serviço
+  db.query(queryAddress, values, (err, result) => {
+    if (err) {
+      console.error("Erro ao atualizar informações do endereço do paciente:", err);
+      res.status(500).json({ Success: "Error", Message: "Erro ao atualizar informações do endereço do paciente." });
+    } if(result) {
+      res.status(200).json({ Success: "Success"});
+    }
+  })
+
+})
 
 app.get('/api/patients/', (req, res) =>{
   const sql=`SELECT *
