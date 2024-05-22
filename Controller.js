@@ -121,23 +121,16 @@ app.post('/api/AddNewPatient/', (req, res) => {
     }
   })
 })
+
 //Route update patient
 app.post('/api/updatePatient/', (req, res) => {
  
   const newName = req.body.newName;
   const newDateBirth = req.body.newDateBirth;
-  const newCEP = req.body.newCEP;
-  const newStreet = req.body.newStreet;
-  const newNumber = req.body.newNumber;
-  const newBairro = req.body.newBairro;
-  const newCity = req.body.newCity;
   const newDateCreation = req.body.newDateCreation;
   const hasLaudo = req.body.hasLaudo;
-  const newCID = req.body.newCID;
   const pacienteId = req.body.pacienteId;
-  const AddressId = req.body.AddressId;
 
-//===== Montando a query do patient =====
   let queryPatient = `UPDATE patient SET`;
 
   // Array para armazenar os valores a serem atualizados
@@ -177,45 +170,6 @@ app.post('/api/updatePatient/', (req, res) => {
     }
   })
 
-  //===== Montando a query do Address =====
-  let queryAddress = `UPDATE Address SET`;
-
-  // Array para armazenar os valores a serem atualizados
-  const valuesAddress = [];
-
-  if (newName) {
-    queryAddress += ` name = ?,`;
-    valuesAddress.push(newName);
-  }
-  if (newDateBirth) {
-    queryAddress += ` date_birth = ?,`;
-    valuesAddress.push(newDateBirth);
-  }
-  if (newDateCreation) {
-    queryAddress += ` registration_date = ?,`;
-    valuesAddress.push(newDateCreation);
-  }
-  if (hasLaudo) {
-    queryAddress += ` laudo = ?,`;
-    valuesAddress.push(hasLaudo);
-  }
-
-  // Remova a última vírgula da query
-  queryAddress = queryAddress.slice(0, -1);
-
-  // Adicione as condições WHERE na query
-  queryAddress += ` WHERE id = ?`;
-  valuesAddress.push(pacienteId);
-
-  // Execute a query para atualizar os dados do serviço
-  db.query(queryAddress, valuesAddress, (err, result) => {
-    if (err) {
-      console.error("Erro ao atualizar informações do paciente:", err);
-      res.status(500).json({ Success: "Error", Message: "Erro ao atualizar informações do paciente." });
-    } if(result) {
-      res.status(200).json({ Success: "Success"});
-    }
-  })
 })
 
 app.get('/api/patients/', (req, res) =>{
