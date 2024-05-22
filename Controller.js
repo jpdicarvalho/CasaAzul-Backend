@@ -8,7 +8,10 @@ import 'dotenv/config';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+app.use(cors({
+  origin: 'https://jpdicarvalho.github.io/CasaAzul-Frontend/'
+}));
+
 app.use(express.json());
 app.use(bodyParser.json());
 
