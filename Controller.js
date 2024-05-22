@@ -8,7 +8,7 @@ import 'dotenv/config';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const allowedOrigins = ['https://jpdicarvalho.github.io', 'http://localhost:5173/CasaAzul-Frontend'];
+const allowedOrigins = ['https://jpdicarvalho.github.io', 'http://localhost:5173'];
 
 const corsOptions = {
   origin: function (origin, callback) {
