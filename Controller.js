@@ -245,8 +245,14 @@ app.post('/api/updateAddress/', (req, res) => {
 app.post('/api/updateLaudoANDcid/:pacienteId', (req, res) => {
 
   const pacienteId = req.params.pacienteId;
-  const hasLaudo = req.body.hasLaudo;
   const newCID = req.body.newCID;
+  let hasLaudo = '';
+
+  if(newCID === 'Não informado'){
+    hasLaudo = 'Não';
+  }else{
+    hasLaudo = 'Sim';
+  }
 
   const sql='UPDATE patient SET laudo = ? WHERE id = ?'
   db.query(sql, [hasLaudo, pacienteId], (err, resul) =>{
