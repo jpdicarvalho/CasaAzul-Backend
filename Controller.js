@@ -167,10 +167,6 @@ app.post('/api/updatePatient/', (req, res) => {
     queryPatient += ` registration_date = ?,`;
     values.push(newDateCreation);
   }
-  if (hasLaudo) {
-    queryPatient += ` laudo = ?,`;
-    values.push(hasLaudo);
-  }
 
   // Remova a última vírgula da query
   queryPatient = queryPatient.slice(0, -1);
@@ -246,11 +242,29 @@ app.post('/api/updateAddress/', (req, res) => {
 
 })
 //Route update laudo and cid
-app.post('/api/updateLaudoANDcid/', (req, res) => {
- 
+app.post('/api/updateLaudoANDcid/:pacienteId', (req, res) => {
+
+  const pacienteId = req.params.pacienteId;
   const hasLaudo = req.body.hasLaudo;
   const newCID = req.body.newCID;
-  console.log(hasLaudo, newCID)
+
+  const sql='UPDATE patient SET laudo = ? WHERE id = ?'
+  db.query(sql, [hasLaudo, pacienteId], (err, resul) =>{
+    if (err) {
+      console.error("Erro ao atualizar laudo do paciente:", err);
+      res.status(500).json({ Success: "Error", Message: "Erro ao atualizar laudo do paciente." });
+    }if(resul) {
+      const sqlCID='UPDATE CID SET code_cid = ? WHERE id = ?'
+      db.query(sqlCID, [newCID, pacienteId], (erro, result) =>{
+        if (erro) {
+          console.error("Erro ao atualizar CID do paciente:", err);
+          res.status(500).json({ Success: "Error", Message: "Erro ao atualizar CID do paciente." });
+        }if(result){
+          res.status(200).json({ Success: "Success"});
+        }
+      })
+    }
+  })
 })
 
 app.get('/api/patients/', (req, res) =>{
