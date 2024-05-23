@@ -242,10 +242,10 @@ app.post('/api/updateAddress/', (req, res) => {
 
 })
 //Route update laudo and cid
-app.post('/api/updateLaudoANDcid/:pacienteId', (req, res) => {
+app.post('/api/updateLaudoANDcid/:pacienteId/:newCID', (req, res) => {
 
   const pacienteId = req.params.pacienteId;
-  const newCID = req.body.newCID;
+  const newCID = req.params.newCID;
   let hasLaudo = '';
 
   if(newCID === 'Não informado'){
