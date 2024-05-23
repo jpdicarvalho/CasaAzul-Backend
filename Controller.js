@@ -253,7 +253,7 @@ app.post('/api/updateLaudoANDcid/:pacienteId', (req, res) => {
   }else{
     hasLaudo = 'Sim';
   }
-
+console.log(newCID, hasLaudo)
   const sql='UPDATE patient SET laudo = ? WHERE id = ?'
   db.query(sql, [hasLaudo, pacienteId], (err, resul) =>{
     if (err) {
