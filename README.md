@@ -2,7 +2,7 @@
 
 ## Visão Geral
 
-Este repositório contém a API da aplicação CasaAzul, desenvolvida em Node.js. A API é responsável por gerenciar as informações dos atendimentos realizados pela instituição Casa Azul, localizada em Santarém, proporcionando um gerenciamento eficiente e organizado dos dados dos pacientes e colaboradores. O banco de dados utilizado é o MySQL.
+Este repositório contém a API da aplicação CasaAzul, desenvolvida em Node.js. A API é responsável por gerenciar as informações dos atendimentos realizados pela instituição Casa Azul, localizada em Santarém, proporcionando um gerenciamento eficiente e organizado dos dados dos pacientes e colaboradores. 
 
 ## Requisitos
 
@@ -40,5 +40,6 @@ Siga os passos abaixo para instalar e configurar o projeto:
    ```bash
    node Controller.js
 
-## Modelo Entidade-Relacionamento
+## Modelo Entidade-Relacionamento (ER)
+   - O modelo ER visa garantir que todos os dados sejam armazenados de maneira organizada e que as relações entre as diferentes entidades sejam claramente definidas,      facilitando a consulta e a geração de relatórios detalhados sobre os atendimentos.
 ![Modelo Entidade-Relacionamento](https://github.com/jpdicarvalho/CasaAzul-Backend/assets/114435447/b044340d-5e44-4686-9d6b-51bdab8aab58)
