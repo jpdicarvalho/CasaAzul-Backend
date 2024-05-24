@@ -186,6 +186,7 @@ app.post('/api/updatePatient/', (req, res) => {
   })
 
 })
+
 //Route update address
 app.post('/api/updateAddress/', (req, res) => {
  
@@ -241,6 +242,7 @@ app.post('/api/updateAddress/', (req, res) => {
   })
 
 })
+
 //Route update laudo and cid
 app.post('/api/updateLaudoANDcid/:pacienteId/:newCID', (req, res) => {
 
@@ -271,6 +273,66 @@ app.post('/api/updateLaudoANDcid/:pacienteId/:newCID', (req, res) => {
       })
     }
   })
+})
+
+//Route update colaborador
+app.put('/api/updateColaborador/', (req, res) => {
+
+  const newName = req.body.newName;
+  const newProfession = req.body.newProfession;
+  const newCPF = req.body.newCPF;
+  const newDateCreation = req.body.newDateCreation;
+  const isWorking = req.body.isWorking;
+  const newObservation = req.body.newObservation;
+  const colaboradorId = req.body.colaboradorId;
+
+  let queryColaborador = `UPDATE Professional SET`;
+
+  // Array para armazenar os valores a serem atualizados
+  const values = [];
+
+  if (newName) {
+    queryColaborador += ` name = ?,`;
+    values.push(newName);
+  }
+  if (newProfession) {
+    queryColaborador += ` profession = ?,`;
+    values.push(newProfession);
+  }
+  if (newDateCreation) {
+    queryColaborador += ` creation_date = ?,`;
+    values.push(newDateCreation);
+  }
+  if (isWorking) {
+    queryColaborador += ` situation = ?,`;
+    values.push(isWorking);
+  }
+  if (newObservation) {
+    queryColaborador += ` observation = ?,`;
+    values.push(newObservation);
+  }
+  if (newCPF) {
+    queryColaborador += ` CPF = ?,`;
+    values.push(newCPF);
+  }
+
+  // Remova a última vírgula da query
+  queryColaborador = queryColaborador.slice(0, -1);
+
+  // Adicione as condições WHERE na query
+  queryColaborador += ` WHERE id = ?`;
+  values.push(colaboradorId);
+
+  // Execute a query para atualizar os dados do serviço
+  db.query(queryColaborador, values, (err, result) => {
+    if (err) {
+      console.error("Erro ao atualizar informações do colaborador:", err);
+      res.status(500).json({ Success: "Error", Message: "Erro ao atualizar informações do colaborador." });
+    } if(result) {
+      res.status(200).json({ Success: "Success"});
+    }
+  })
+
 })
 
 app.get('/api/patients/', (req, res) =>{
