@@ -332,7 +332,6 @@ app.put('/api/updateColaborador/', (req, res) => {
       res.status(200).json({ Success: "Success"});
     }
   })
-
 })
 
 app.get('/api/patients/', (req, res) =>{
