@@ -489,7 +489,6 @@ app.post('/api/addNewService/:newService', (req, res) =>{
 app.get('/api/atendimentos/', (req, res) =>{
 
   const status = 'Não realizado';
-
   const sql=`SELECT
               service.id AS service_id,
               service.date_service, 
@@ -619,6 +618,7 @@ app.get('/api/generateReportByService/:serviceId', (req, res) => {
     }
   })
 })
+
 //Route to generate report by period
 app.get('/api/generateReportByPeriod/:dateInitial/:dateFinal', (req, res) => {
   const dateInitial = req.params.dateInitial;
